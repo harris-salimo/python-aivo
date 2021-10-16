@@ -122,14 +122,14 @@ def blur(image):
 
     for x in range(0, gray_image.shape[0]):
         for y in range(0, gray_image.shape[1]):
-            width = filter.shape[0] // 2
-            height = filter.shape[1] // 2
+            filter_half_width = filter.shape[0] // 2
+            filter_half_height = filter.shape[1] // 2
             pixel_value = 0
 
             for i in range(0, filter.shape[0]):
                 for j in range(0, filter.shape[1]):
-                    x_image = x + i - width
-                    y_image = y + j - height
+                    x_image = x + i - filter_half_width
+                    y_image = y + j - filter_half_height
                     if (x_image >= 0) and (x_image < gray_image.shape[0]) and (y_image >= 0) and (y_image < gray_image.shape[1]):
                         pixel_value += filter[i, j] * image[x_image, y_image]
 
@@ -155,8 +155,7 @@ def dilatation(binary_image):
                 for j in range(0, filter.shape[1]):
                     x_image = x + i - filter_half_width
                     y_image = y + j - filter_half_height
-                    if (x_image >= 0) and (x_image < binary_image.shape[0]) and (y_image >= 0) and (
-                            y_image < binary_image.shape[1]):
+                    if (x_image >= 0) and (x_image < binary_image.shape[0]) and (y_image >= 0) and (y_image < binary_image.shape[1]):
                         if binary_image[x_image, y_image] and filter[i, j]:
                             pixel_value = 255
 
@@ -182,8 +181,7 @@ def erosion(binary_image):
                 for j in range(0, filter.shape[1]):
                     x_image = x + i - filter_half_width
                     y_image = y + j - filter_half_height
-                    if (x_image >= 0) and (x_image < binary_image.shape[0]) and (y_image >= 0) and (
-                            y_image < binary_image.shape[1]):
+                    if (x_image >= 0) and (x_image < binary_image.shape[0]) and (y_image >= 0) and (y_image < binary_image.shape[1]):
                         if filter[i, j] and not (binary_image[x_image, y_image]):
                             pixel_value = 0
 
