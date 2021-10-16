@@ -10,7 +10,7 @@ root.title("KitiK")
 root.geometry("800x600")
 # root.resizable(width=False, height=False)
 
-currentImage, newImage = "", ""
+current_image, new_image = "", ""
 
 
 def donothing():
@@ -19,245 +19,243 @@ def donothing():
     button.pack()
 
 
-def openImage():
+def open_image():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = filedialog.askopenfilename(initialdir="~/Pictures", title="Open image",
+    new_image = filedialog.askopenfilename(initialdir="~/Pictures", title="Open image",
                                            filetypes=(("JPG files", "*.jpg"), ("PNG files", "*.png")))
-    root.title("{} - AIVO".format(newImage.split("/")[-1]))
-    currentImage = newImage
-    openedImage = currentImage
-    img = ImageTk.PhotoImage(Image.open(newImage))
+    root.title("{} - AIVO".format(new_image.split("/")[-1]))
+    current_image = new_image
+    opened_image = current_image
+    image = ImageTk.PhotoImage(Image.open(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def rotateImage(direction):
+def rotate_an_image(direction):
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
     angle = 90
 
     if direction == "RIGHT":
         angle *= -1
 
-    newImage = rotate(cv2.imread(openedImage), angle)
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = rotate(cv2.imread(opened_image), angle)
+    current_image = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def grayImage():
+def convert_image_to_gray():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = rgbToGray(cv2.imread(openedImage))
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = rgb_to_gray(cv2.imread(opened_image))
+    current_image = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def binarizeImage():
+def convert_image_to_binary_image():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = binarize(cv2.imread(openedImage), 128)
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = binarize(cv2.imread(opened_image), 128)
+    current_image = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def inverseImage():
+def convert_image_to_inversed_image():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = inverse(cv2.imread(openedImage))
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = inverse(cv2.imread(opened_image))
+    current_image = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def adjustConImage():
+def adjust_image_contraste():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = equalizeHist(cv2.imread(openedImage))
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = equalize_histogram(cv2.imread(opened_image))
+    current_image = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def adjustLumImage():
+def adjust_image_luminosity():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = stretchHist(cv2.imread(openedImage), 64, 192)
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = stretch_histogram(cv2.imread(opened_image), 64, 192)
+    current_image = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def blurImage():
+def blur_an_image():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = blur(cv2.imread(openedImage))
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = blur(cv2.imread(opened_image))
+    current_image = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def edgeImage():
+def extract_edge_on_image():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = edge(cv2.imread(openedImage))
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = detect_edge(cv2.imread(opened_image))
+    currentImage = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def openingMorphTransImage():
+def opening_morph_trans_on_image():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = opening(cv2.imread(openedImage))
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = opening(cv2.imread(opened_image))
+    current_image = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def closingMorphTransImage():
+def closing_morph_trans_on_image():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = closing(cv2.imread(openedImage))
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = closing(cv2.imread(opened_image))
+    current_image = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def othMorphTransImage():
+def oth_morph_trans_on_image():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = openingTopHat(cv2.imread(openedImage))
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = opening_top_hat(cv2.imread(opened_image))
+    current_image = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
-def cthMorphTransImage():
+def cth_morph_trans_on_image():
     global label
-    global currentImage
-    global openedImage
+    global current_image
+    global opened_image
 
-    newImage = closingTopHat(cv2.imread(openedImage))
-    currentImage = newImage
-    img = ImageTk.PhotoImage(Image.fromarray(newImage))
+    new_image = closing_top_hat(cv2.imread(opened_image))
+    current_image = new_image
+    image = ImageTk.PhotoImage(Image.fromarray(new_image))
 
     label.pack_forget()
-    label = Label(image=img, anchor=CENTER)
-    label.image = img
+    label = Label(image=image, anchor=CENTER)
+    label.image = image
     label.pack()
 
 
+def show_histogram():
+    global opened_image
 
-
-def showHist():
-    global openedImage
-
-    hist = computeHist(cv2.imread(openedImage))
-    plt.plot(hist)
+    histogram = compute_histogram(cv2.imread(opened_image))
+    plt.plot(histogram)
     plt.xlabel('Gray level')
     plt.ylabel('Count')
     plt.title("Histogram of the image in gray level")
     plt.show()
 
 
-def saveImage():
-    global currentImage
+def save_image():
+    global current_image
 
-    if currentImage:
+    if current_image:
         # imageName = currentImage.split("/")[-1]
-        imageName = currentImage
-        cv2.imwrite(imageName, currentImage)
+        image_name = current_image
+        cv2.imwrite(image_name, current_image)
     else:
-        saveAsImage()
+        save_as_image()
 
 
-def saveAsImage():
-    global currentImage
+def save_as_image():
+    global current_image
 
-    imageName = filedialog.asksaveasfilename(defaultextension=".png", initialdir="~/Pictures/", title="Save an image", filetypes=(("JPG files", "*.jpg"), ("PNG files", "*.png")))
+    image_name = filedialog.asksaveasfilename(defaultextension=".png", initialdir="~/Pictures/", title="Save an image", filetypes=(("PNG files", "*.png"), ("JPG files", "*.jpg")))
 
-    if imageName:
+    if image_name:
         # imageName = imageName.split("/")[-1]
-        cv2.imwrite(imageName, currentImage)
-        root.title("{} - AIVO".format(imageName.split("/")[-1]))
+        cv2.imwrite(image_name, current_image)
+        root.title("{} - AIVO".format(image_name.split("/")[-1]))
 
 
-def closeImage():
+def close_image():
     global label
     label.pack_forget()
     label = Label(text="Select an image...", anchor=CENTER)
@@ -267,10 +265,10 @@ def closeImage():
 menubar = Menu(root)
 
 filemenu = Menu(menubar, tearoff=0)
-filemenu.add_command(label="Open", command=openImage)
-filemenu.add_command(label="Save", command=saveImage)
-filemenu.add_command(label="Save as", command=saveAsImage)
-filemenu.add_command(label="Close", command=closeImage)
+filemenu.add_command(label="Open", command=open_image)
+filemenu.add_command(label="Save", command=save_image)
+filemenu.add_command(label="Save as", command=save_as_image)
+filemenu.add_command(label="Close", command=close_image)
 filemenu.add_separator()
 filemenu.add_command(label="Exit", command=root.quit)
 
@@ -285,20 +283,20 @@ menubar.add_cascade(label="Edit", menu=editmenu)
 imagemenu = Menu(menubar, tearoff=0)
 imagemenu.add_command(label="Flip Horizontally", command=donothing)
 imagemenu.add_command(label="Flip Vertically", command=donothing)
-imagemenu.add_command(label="Rotate Right", command=lambda: rotateImage("RIGHT"))
-imagemenu.add_command(label="Rotate Left", command=lambda: rotateImage("LEFT"))
-imagemenu.add_command(label="Adjust contraste", command=adjustConImage)
-imagemenu.add_command(label="Adjust luminosity", command=adjustLumImage)
-imagemenu.add_command(label="Gray color", command=grayImage)
-imagemenu.add_command(label="BW color", command=binarizeImage)
-imagemenu.add_command(label="Negative color", command=inverseImage)
-imagemenu.add_command(label="Blur image", command=blurImage)
-imagemenu.add_command(label="Edge detect", command=edgeImage)
-imagemenu.add_command(label="Morph Trans Opening", command=openingMorphTransImage)
-imagemenu.add_command(label="Morph Trans Closing", command=closingMorphTransImage)
-imagemenu.add_command(label="Morph Trans OTH", command=othMorphTransImage)
-imagemenu.add_command(label="Morph Trans CTH", command=cthMorphTransImage)
-imagemenu.add_command(label="Voir l'histogramme", command=showHist)
+imagemenu.add_command(label="Rotate Right", command=lambda: rotate_an_image("RIGHT"))
+imagemenu.add_command(label="Rotate Left", command=lambda: rotate_an_image("LEFT"))
+imagemenu.add_command(label="Adjust contraste", command=adjust_image_contraste)
+imagemenu.add_command(label="Adjust luminosity", command=adjust_image_luminosity)
+imagemenu.add_command(label="Gray color", command=convert_image_to_gray)
+imagemenu.add_command(label="BW color", command=convert_image_to_binary_image)
+imagemenu.add_command(label="Negative color", command=convert_image_to_inversed_image)
+imagemenu.add_command(label="Blur image", command=blur_an_image)
+imagemenu.add_command(label="Edge detect", command=extract_edge_on_image)
+imagemenu.add_command(label="Morph Trans Opening", command=opening_morph_trans_on_image)
+imagemenu.add_command(label="Morph Trans Closing", command=closing_morph_trans_on_image)
+imagemenu.add_command(label="Morph Trans OTH", command=oth_morph_trans_on_image)
+imagemenu.add_command(label="Morph Trans CTH", command=cth_morph_trans_on_image)
+imagemenu.add_command(label="Voir l'histogramme", command=show_histogram)
 
 menubar.add_cascade(label="Image", menu=imagemenu)
 

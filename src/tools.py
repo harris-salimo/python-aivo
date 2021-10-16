@@ -3,189 +3,236 @@ import numpy
 import matplotlib.pyplot as plt
 
 
-def rgbToGray(image):
-    b, g, r = cv2.split(image)
-    image = 0.299 * r + 0.587 * g + 0.144 * r
-    image = image.astype(numpy.uint8)
-    return image
+def rgb_to_gray(image):
+    """ Convert colored image to gray level """
+
+    blue, green, red = cv2.split(image)
+    gray_image = 0.299 * red + 0.587 * green + 0.144 * red
+    gray_image = gray_image.astype(numpy.uint8)
+
+    return gray_image
 
 
 def rotate(image, angle):
-    height, width = image.shape[:2]
-    matrix = cv2.getRotationMatrix2D((width / 2, height / 2), angle, 1)
-    return cv2.warpAffine(image, matrix, (width, height))
+    """ Rotate an image with an angle """
+
+    image_height, image_width = image.shape[:2]
+    matrix_of_image_pixels = cv2.getRotationMatrix2D((image_width / 2, image_height / 2), angle, 1)
+
+    return cv2.warpAffine(image, matrix_of_image_pixels, (image_width, image_height))
 
 
-def computeHist(image):
-    image = rgbToGray(image)
-    height, width = image.shape[:2]
-    hist = numpy.zeros(256, int)
+def compute_histogram(image):
+    """ Compute the histogram of an image """
 
-    for i in range(0, height):
-        for j in range(0, width):
-            hist[image[i][j]] = hist[image[i][j]] + 1
+    gray_image = rgb_to_gray(image)
+    image_height, image_width = image.shape[:2]
 
-    return hist
+    image_histogram = numpy.zeros(256, int)
+
+    for i in range(0, image_height):
+        for j in range(0, image_width):
+            image_histogram[gray_image[i][j]] = image_histogram[gray_image[i][j]] + 1
+
+    return image_histogram
 
 
 def binarize(image, thresh):
-    image = rgbToGray(image)
-    height, width = image.shape[:2]
+    """ Binarize an image """
 
-    for i in range(0, width):
-        for j in range(0, height):
-            if image[i][j] < thresh:
-                image[i][j] = 0
+    gray_image = rgb_to_gray(image)
+    image_height, image_width = image.shape[:2]
+
+    binary_image = gray_image
+
+    for i in range(0, image_width):
+        for j in range(0, image_height):
+            if gray_image[i][j] < thresh:
+                binary_image[i][j] = 0
             else:
-                image[i][j] = 255
+                binary_image[i][j] = 255
 
-    return image
+    return binary_image
 
 
 def inverse(image):
-    image = rgbToGray(image)
-    height, width = image.shape[:2]
+    """ Inverse an image """
+
+    gray_image = rgb_to_gray(image)
+    image_height, image_width = image.shape[:2]
     I_MAX = image.max()
 
-    for i in range(0, width):
-        for j in range(0, height):
+    inversed_image = gray_image
+
+    for i in range(0, image_width):
+        for j in range(0, image_height):
             # image[i][j] = 255 - image[i][j]
-            image[i][j] = I_MAX - image[i][j]
+            inversed_image[i][j] = I_MAX - gray_image[i][j]
 
-    return image
+    return inversed_image
 
 
-def equalizeHist(image):
-    image = rgbToGray(image)
-    height, width = image.shape[:2]
-    hist0 = numpy.zeros(256, int)
-    for i in range(0, width):
-        for j in range(0, height):
-            hist0[image[i][j]] = hist0[image[i][j]] + 1
+def equalize_histogram(image):
+    """ Equalize the histogram of an image """
 
-    hist0c = numpy.zeros(256, int)
-    hist0c[0] = hist0[0]
+    gray_image = rgb_to_gray(image)
+    image_height, image_width = image.shape[:2]
+    histogram = numpy.zeros(256, int)
+
+    for i in range(0, image_width):
+        for j in range(0, image_height):
+            histogram[gray_image[i][j]] = histogram[gray_image[i][j]] + 1
+
+    histogram_cumulated = numpy.zeros(256, int)
+    histogram_cumulated[0] = histogram[0]
     for i in range(1, 256):
-        hist0c[i] = hist0[i] + hist0c[i - 1]
+        histogram_cumulated[i] = histogram[i] + histogram_cumulated[i - 1]
 
-    nbpixels = image.size
-    hist0c = hist0c / nbpixels * 255
+    number_of_pixels = gray_image.size
+    hist0c = histogram_cumulated / number_of_pixels * 255
 
-    for i in range(0, image.shape[0]):
-        for j in range(0, image.shape[1]):
-            image[i][j] = hist0c[image[i][j]]
+    for i in range(0, gray_image.shape[0]):
+        for j in range(0, gray_image.shape[1]):
+            gray_image[i][j] = hist0c[gray_image[i][j]]
 
-    return cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+    return cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
 
 
-def stretchHist(image, min, max):
-    image = rgbToGray(image)
-    height, width = image.shape[:2]
+def stretch_histogram(image, min, max):
+    """ Stretch the histogram of an image """
 
-    for i in range(0, width):
-        for j in range(0, height):
-            image[i][j] = (255 * (image[i][j] - min)) / (max - min)
+    gray_image = rgb_to_gray(image)
+    image_height, image_width = image.shape[:2]
 
-    return cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+    for i in range(0, image_width):
+        for j in range(0, image_height):
+            gray_image[i][j] = (255 * (gray_image[i][j] - min)) / (max - min)
+
+    return cv2.cvtColor(gray_image, cv2.COLOR_GRAY2BGR)
 
 
 def blur(image):
-    image = rgbToGray(image)
+    """ Blur an image """
+
+    gray_image = rgb_to_gray(image)
     filter_size = 7
     filter = (1 / (filter_size * filter_size)) * numpy.ones((filter_size, filter_size), dtype=numpy.uint8)
 
-    image1 = numpy.zeros(image.shape, dtype=numpy.uint8)
+    new_image = numpy.zeros(gray_image.shape, dtype=numpy.uint8)
 
     for x in range(0, image.shape[0]):
         for y in range(0, image.shape[1]):
-            width = filter.shape[0] // 2
-            height = filter.shape[1] // 2
+            filter_half_width = filter.shape[0] // 2
+            filter_half_height = filter.shape[1] // 2
             pixel_value = 0
 
             for i in range(0, filter.shape[0]):
                 for j in range(0, filter.shape[1]):
-                    x_image = x + i - width
-                    y_image = y + j - height
+                    x_image = x + i - filter_half_width
+                    y_image = y + j - filter_half_height
                     if (x_image >= 0) and (x_image < image.shape[0]) and (y_image >= 0) and (
                             y_image < image.shape[1]):
                         pixel_value += filter[i, j] * image[x_image, y_image]
 
-            image1[x, y] = pixel_value
+            print("New image(" + str(x) + ", " + str(y) + "): " + str(new_image[x, y]) + ", Pixel: " + str(pixel_value))
+            new_image[x, y] = pixel_value
 
-    return image1
+    return new_image
 
 
-def dilatation(bin_image):
+def dilatation(binary_image):
+    """ Dilate a binary image """
+
     filter = numpy.ones((3, 3), dtype=numpy.uint8)
-    image1 = numpy.zeros(bin_image.shape, dtype=numpy.uint8)
-    for x in range(0, bin_image.shape[0]):
-        for y in range(0, bin_image.shape[1]):
-            width = filter.shape[0] // 2
-            height = filter.shape[1] // 2
+
+    dilated_image = numpy.zeros(binary_image.shape, dtype=numpy.uint8)
+
+    for x in range(0, binary_image.shape[0]):
+        for y in range(0, binary_image.shape[1]):
+            filter_half_width = filter.shape[0] // 2
+            filter_half_height = filter.shape[1] // 2
             pixel_value = 0
 
             for i in range(0, filter.shape[0]):
                 for j in range(0, filter.shape[1]):
-                    x_image = x + i - width
-                    y_image = y + j - height
-                    if (x_image >= 0) and (x_image < bin_image.shape[0]) and (y_image >= 0) and (
-                            y_image < bin_image.shape[1]):
-                        if bin_image[x_image, y_image] and filter[i, j]:
+                    x_image = x + i - filter_half_width
+                    y_image = y + j - filter_half_height
+                    if (x_image >= 0) and (x_image < binary_image.shape[0]) and (y_image >= 0) and (
+                            y_image < binary_image.shape[1]):
+                        if binary_image[x_image, y_image] and filter[i, j]:
                             pixel_value = 255
 
-            image1[x, y] = pixel_value
+            dilated_image[x, y] = pixel_value
 
-    return image1
+    return dilated_image
 
 
-def erosion(bin_image):
+def erosion(binary_image):
+    """ Erode a binary image """
+
     filter = numpy.ones((3, 3), dtype=numpy.uint8)
-    image1 = numpy.zeros(bin_image.shape, dtype=numpy.uint8)
-    for x in range(0, bin_image.shape[0]):
-        for y in range(0, bin_image.shape[1]):
-            width = filter.shape[0] // 2
-            height = filter.shape[1] // 2
+
+    eroded_image = numpy.zeros(binary_image.shape, dtype=numpy.uint8)
+
+    for x in range(0, binary_image.shape[0]):
+        for y in range(0, binary_image.shape[1]):
+            filter_half_width = filter.shape[0] // 2
+            filter_half_height = filter.shape[1] // 2
             pixel_value = 255
 
             for i in range(0, filter.shape[0]):
                 for j in range(0, filter.shape[1]):
-                    x_image = x + i - width
-                    y_image = y + j - height
-                    if (x_image >= 0) and (x_image < bin_image.shape[0]) and (y_image >= 0) and (
-                            y_image < bin_image.shape[1]):
-                        if filter[i, j] and not (bin_image[x_image, y_image]):
+                    x_image = x + i - filter_half_width
+                    y_image = y + j - filter_half_height
+                    if (x_image >= 0) and (x_image < binary_image.shape[0]) and (y_image >= 0) and (
+                            y_image < binary_image.shape[1]):
+                        if filter[i, j] and not (binary_image[x_image, y_image]):
                             pixel_value = 0
 
-            image1[x, y] = pixel_value
+            eroded_image[x, y] = pixel_value
 
-    return image1
+    return eroded_image
 
 
 def opening(image):
-    bin_image = binarize(image, 128)
-    return dilatation(erosion(bin_image))
+    """ Apply dilatation just after erosion operation
+    to an image which need to be binarizing first """
+
+    binarized_image = binarize(image, 128)
+
+    return dilatation(erosion(binarized_image))
 
 
 def closing(image):
-    bin_image = binarize(image, 128)
-    return erosion(dilatation(bin_image))
+    """ Apply erosion just after dilatation operation
+    to an image which need to be binarizing first """
+
+    binarized_image = binarize(image, 128)
+
+    return erosion(dilatation(binarized_image))
 
 
-def openingTopHat(image):
-    bin_image = binarize(image, 128)
-    return bin_image - opening(image)
+def opening_top_hat(image):
+    binary_image = binarize(image, 128)
+
+    return binary_image - opening(image)
 
 
-def closingTopHat(image):
-    bin_image = binarize(image, 128)
-    return closing(image) - bin_image
+def closing_top_hat(image):
+    binary_image = binarize(image, 128)
+
+    return closing(image) - binary_image
 
 
-def edge(image):
-    bin_image = binarize(image, 128)
-    image1 = dilatation(bin_image)
-    image1 = bin_image - image1
-    image2 = erosion(bin_image)
-    image2 = bin_image - image2
+def detect_edge(image):
+    """ Detect edge on an image """
 
-    return image1 + image2
+    binary_image = binarize(image, 128)
+
+    image_after_dilatation = dilatation(binary_image)
+    image_after_dilatation = binary_image - image_after_dilatation
+
+    image_after_erosion = erosion(binary_image)
+    image_after_erosion = binary_image - image_after_erosion
+
+    return image_after_dilatation + image_after_erosion
