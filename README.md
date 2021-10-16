@@ -36,7 +36,10 @@ Pour executer le programme, tapez seulement la commande ci-dessous dans votre in
 - Sous Linux ou OS X:
   `python3 src/main.py`
 
-#### NB (_Pour Linux seulement_): Ce programme utilise la librarie `tkinter` pour l'interface graphique. Ce dernier peut produire une erreur si elle n'est pas installée alors verifiez l'installation en executant `import tkinter` puis `Enter` dans l'interpreteur de python.
+#### NB (_Pour Linux seulement_): Ce programme utilise la librarie `tkinter` pour l'interface graphique et la module `ImageTk` du librairie `Pillow` pour charger une image dans l'interface graphique. Ce dernier peut produire une erreur si elle n'est pas installée alors verifiez l'installation en executant 
+`>>> import tkinter`\
+`>>> from PIL import ImageTk`
+### Puis `Enter` dans l'interpreteur de python.
 Pour ouvrir l'interpreteur tapez juste `python` si vous êtes sous Windows ou `python3` si vous êtes sous Linux/OS X dans votre invite de commande.
 
 ## Test
