@@ -118,23 +118,21 @@ def blur(image):
     filter_size = 7
     filter = (1 / (filter_size * filter_size)) * numpy.ones((filter_size, filter_size), dtype=numpy.uint8)
 
-    new_image = numpy.zeros(gray_image.shape, dtype=numpy.uint8)
+    new_image = numpy.zeros(image.shape, dtype=numpy.uint8)
 
-    for x in range(0, image.shape[0]):
-        for y in range(0, image.shape[1]):
-            filter_half_width = filter.shape[0] // 2
-            filter_half_height = filter.shape[1] // 2
+    for x in range(0, gray_image.shape[0]):
+        for y in range(0, gray_image.shape[1]):
+            width = filter.shape[0] // 2
+            height = filter.shape[1] // 2
             pixel_value = 0
 
             for i in range(0, filter.shape[0]):
                 for j in range(0, filter.shape[1]):
-                    x_image = x + i - filter_half_width
-                    y_image = y + j - filter_half_height
-                    if (x_image >= 0) and (x_image < image.shape[0]) and (y_image >= 0) and (
-                            y_image < image.shape[1]):
+                    x_image = x + i - width
+                    y_image = y + j - height
+                    if (x_image >= 0) and (x_image < gray_image.shape[0]) and (y_image >= 0) and (y_image < gray_image.shape[1]):
                         pixel_value += filter[i, j] * image[x_image, y_image]
 
-            print("New image(" + str(x) + ", " + str(y) + "): " + str(new_image[x, y]) + ", Pixel: " + str(pixel_value))
             new_image[x, y] = pixel_value
 
     return new_image
